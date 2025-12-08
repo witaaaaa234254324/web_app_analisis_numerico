@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Resultado - Interpolación {{ metodo|capitalize }}</h1>
+    
+    <div class="notification is-info">
+        <strong>Interpolación completada</strong> con el método de {{ resultado.tipo }}
+    </div>
+
+    <div class="box">
+        <h2 class="title is-4">Puntos de Datos</h2>
+        <div class="content">
+            <table class="table is-striped is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Punto</th>
+                        <th>X</th>
+                        <th>Y</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(resultado.puntos_x|length) %}
+                    <tr>
+                        <td>{{ i+1 }}</td>
+                        <td>{{ resultado.puntos_x[i] }}</td>
+                        <td>{{ resultado.puntos_y[i] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if resultado.x_evaluado is defined %}
+    <div class="box has-background-info-light">
+        <h2 class="title is-4">Evaluación</h2>
+        <div class="content">
+            <p class="is-size-4">
+                Para <strong>x = {{ resultado.x_evaluado }}</strong>, 
+                el valor interpolado es <strong>y ≈ {{ "%.6f"|format(resultado.y_evaluado) }}</strong>
+            </p>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="columns">
+        <div class="column">
+            <div class="box">
+                <h3 class="title is-5">Información</h3>
+                <table class="table is-narrow">
+                    <tr><td><strong>Método:</strong></td><td>{{ resultado.tipo }}</td></tr>
+                    <tr><td><strong>Grado del polinomio:</strong></td><td>{{ resultado.grado }}</td></tr>
+                    <tr><td><strong>Número de puntos:</strong></td><td>{{ resultado.puntos_x|length }}</td></tr>
+                </table>
+            </div>
+        </div>
+        
+        {% if resultado.coeficientes is defined %}
+        <div class="column">
+            <div class="box">
+                <h3 class="title is-5">Coeficientes</h3>
+                <table class="table is-narrow is-striped">
+                    <thead>
+                        <tr><th>i</th><th>Coeficiente</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for i in range(resultado.coeficientes|length) %}
+                        <tr>
+                            <td>{{ i }}</td>
+                            <td>{{ "%.6f"|format(resultado.coeficientes[i]) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if resultado.tabla_diferencias is defined %}
+    <div class="box">
+        <h3 class="title is-5">Tabla de Diferencias Divididas</h3>
+        <div class="table-container">
+            <table class="table is-bordered is-narrow">
+                <thead>
+                    <tr>
+                        <th>i</th>
+                        {% for j in range(resultado.tabla_diferencias[0]|length) %}
+                        <th>f[x<sub>{{ j }}</sub>]</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(resultado.tabla_diferencias|length) %}
+                    <tr>
+                        <td>{{ i }}</td>
+                        {% for j in range(resultado.tabla_diferencias[i]|length) %}
+                        {% if resultado.tabla_diferencias[i][j] != 0 %}
+                        <td>{{ "%.6f"|format(resultado.tabla_diferencias[i][j]) }}</td>
+                        {% else %}
+                        <td>-</td>
+                        {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="box">
+        <h3 class="title is-5">Visualización de la Curva</h3>
+        <div class="content">
+            <p><em>Gráfica del polinomio interpolante (datos disponibles en el resultado)</em></p>
+            <p class="help">La aplicación almacena los puntos de la curva interpolada. 
+            Puedes visualizarlos con librerías como Matplotlib o Chart.js.</p>
+            <details>
+                <summary class="button is-small">Ver datos de la gráfica</summary>
+                <div class="mt-3">
+                    <p><strong>Puntos calculados:</strong> {{ resultado.x_grafica|length }}</p>
+                    <p><strong>Rango X:</strong> [{{ "%.2f"|format(resultado.x_grafica|first) }}, {{ "%.2f"|format(resultado.x_grafica|last) }}]</p>
+                    <p><strong>Rango Y:</strong> [{{ "%.2f"|format(resultado.y_grafica|min) }}, {{ "%.2f"|format(resultado.y_grafica|max) }}]</p>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <a href="{{ url_for('method.interpolacion_view') }}" class="button is-danger">Resolver Otro</a>
+        <a href="{{ url_for('method.index') }}" class="button is-light">Volver al Inicio</a>
+        <a href="{{ url_for('method.historial') }}" class="button is-link">Ver Historial</a>
+    </div>
+</div>
+{% endblock %}

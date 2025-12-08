@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Gradiente Conjugado (CG)</h1>
+    <p class="subtitle">Resuelve sistemas lineales Ax = b con matrices simétricas positivas definidas</p>
+
+    <div class="box">
+        <h2 class="title is-4">Ejemplos Prácticos</h2>
+        <div class="content">
+            <p><strong>Ejemplo 1 - Sistema 3x3:</strong></p>
+            <p>Matriz A: <code>[[4, 1, 0], [1, 3, 1], [0, 1, 2]]</code></p>
+            <p>Vector b: <code>[1, 2, 3]</code></p>
+            
+            <p><strong>Ejemplo 2 - Problema de calor:</strong></p>
+            <p>Matriz A: <code>[[5, -1, 0], [-1, 5, -1], [0, -1, 5]]</code></p>
+            <p>Vector b: <code>[10, 20, 30]</code></p>
+        </div>
+    </div>
+
+    <form method="POST" class="box" id="formCG">
+        <div class="field">
+            <label class="label">Título del Problema (opcional)</label>
+            <div class="control">
+                <input class="input" type="text" name="title" placeholder="Ej: Sistema de ecuaciones térmicas">
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Tamaño del sistema (n × n)</label>
+            <div class="control">
+                <div class="select">
+                    <select id="tamano" onchange="generarCampos()">
+                        <option value="2">2 × 2</option>
+                        <option value="3" selected>3 × 3</option>
+                        <option value="4">4 × 4</option>
+                        <option value="5">5 × 5</option>
+                    </select>
+                </div>
+            </div>
+            <p class="help">Selecciona el tamaño de tu sistema de ecuaciones</p>
+        </div>
+
+        <div class="field">
+            <label class="label">Matriz A (Debe ser simétrica y positiva definida)</label>
+            <div id="matrizContainer" class="box" style="background-color: #f5f5f5;">
+                <!-- Se generará dinámicamente -->
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Vector b</label>
+            <div id="vectorContainer" class="box" style="background-color: #f5f5f5;">
+                <!-- Se generará dinámicamente -->
+            </div>
+        </div>
+
+        <input type="hidden" name="matriz" id="matrizJSON">
+        <input type="hidden" name="vector" id="vectorJSON">
+
+        <div class="columns">
+            <div class="column">
+                <div class="field">
+                    <label class="label">Tolerancia</label>
+                    <div class="control">
+                        <input class="input" type="text" name="tolerancia" value="0.000001">
+                    </div>
+                    <p class="help">Error máximo aceptable (ej: 1e-6)</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="label">Iteraciones Máximas</label>
+                    <div class="control">
+                        <input class="input" type="number" name="max_iter" value="1000">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-info" type="submit" onclick="prepararDatos(event)">
+                    <span class="icon"><i class="fas fa-calculator"></i></span>
+                    <span>Resolver</span>
+                </button>
+            </div>
+            <div class="control">
+                <button type="button" class="button is-link is-light" onclick="cargarEjemplo()">
+                    <span class="icon"><i class="fas fa-magic"></i></span>
+                    <span>Cargar Ejemplo</span>
+                </button>
+            </div>
+            <div class="control">
+                <a href="{{ url_for('method.index') }}" class="button is-light">Cancelar</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+function generarCampos() {
+    const n = parseInt(document.getElementById('tamano').value);
+    const matrizContainer = document.getElementById('matrizContainer');
+    const vectorContainer = document.getElementById('vectorContainer');
+    
+    // Generar campos para la matriz
+    let matrizHTML = '<table class="table is-bordered" style="margin: auto;">';
+    for (let i = 0; i < n; i++) {
+        matrizHTML += '<tr>';
+        for (let j = 0; j < n; j++) {
+            const valor = i === j ? '4' : (Math.abs(i - j) === 1 ? '1' : '0');
+            matrizHTML += `<td><input type="number" step="any" class="input is-small matriz-input" 
+                          data-i="${i}" data-j="${j}" value="${valor}" style="width: 80px; text-align: center;" required></td>`;
+        }
+        matrizHTML += '</tr>';
+    }
+    matrizHTML += '</table>';
+    matrizContainer.innerHTML = matrizHTML;
+    
+    // Generar campos para el vector
+    let vectorHTML = '<div class="columns is-mobile is-multiline">';
+    for (let i = 0; i < n; i++) {
+        vectorHTML += `
+            <div class="column is-narrow">
+                <div class="field">
+                    <label class="label is-small">b<sub>${i+1}</sub></label>
+                    <div class="control">
+                        <input type="number" step="any" class="input vector-input" 
+                               data-i="${i}" value="${i+1}" style="width: 80px;" required>
+                    </div>
+                </div>
+            </div>`;
+    }
+    vectorHTML += '</div>';
+    vectorContainer.innerHTML = vectorHTML;
+}
+
+function prepararDatos(event) {
+    event.preventDefault();
+    
+    const n = parseInt(document.getElementById('tamano').value);
+    const matriz = [];
+    const vector = [];
+    
+    // Construir matriz
+    for (let i = 0; i < n; i++) {
+        const fila = [];
+        for (let j = 0; j < n; j++) {
+            const input = document.querySelector(`input.matriz-input[data-i="${i}"][data-j="${j}"]`);
+            fila.push(parseFloat(input.value));
+        }
+        matriz.push(fila);
+    }
+    
+    // Construir vector
+    for (let i = 0; i < n; i++) {
+        const input = document.querySelector(`input.vector-input[data-i="${i}"]`);
+        vector.push(parseFloat(input.value));
+    }
+    
+    // Guardar en campos hidden
+    document.getElementById('matrizJSON').value = JSON.stringify(matriz);
+    document.getElementById('vectorJSON').value = JSON.stringify(vector);
+    
+    // Enviar formulario
+    document.getElementById('formCG').submit();
+}
+
+function cargarEjemplo() {
+    document.getElementById('tamano').value = '3';
+    generarCampos();
+    
+    // Ejemplo: Sistema térmico
+    const ejemploMatriz = [[4, 1, 0], [1, 3, 1], [0, 1, 2]];
+    const ejemploVector = [1, 2, 3];
+    
+    ejemploMatriz.forEach((fila, i) => {
+        fila.forEach((val, j) => {
+            const input = document.querySelector(`input.matriz-input[data-i="${i}"][data-j="${j}"]`);
+            if (input) input.value = val;
+        });
+    });
+    
+    ejemploVector.forEach((val, i) => {
+        const input = document.querySelector(`input.vector-input[data-i="${i}"]`);
+        if (input) input.value = val;
+    });
+}
+
+// Generar campos al cargar la página
+document.addEventListener('DOMContentLoaded', generarCampos);
+</script>
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Interpolación</h1>
+    <p class="subtitle">Estima valores entre puntos de datos conocidos</p>
+
+    <div class="box">
+        <h2 class="title is-4">Ejemplos Prácticos</h2>
+        <div class="content">
+            <p><strong>Ejemplo 1 - Temperatura vs Tiempo:</strong></p>
+            <p>X (horas): <code>[0, 2, 4, 6, 8]</code></p>
+            <p>Y (°C): <code>[20, 25, 28, 26, 22]</code></p>
+            
+            <p><strong>Ejemplo 2 - Producción vs Inversión:</strong></p>
+            <p>X (miles $): <code>[1, 2, 3, 4, 5]</code></p>
+            <p>Y (unidades): <code>[10, 18, 24, 28, 30]</code></p>
+            
+            <p class="help">Ingresa al menos 3 puntos para una interpolación significativa.</p>
+        </div>
+    </div>
+
+    <form method="POST" class="box" id="formInterpolacion">
+        <div class="field">
+            <label class="label">Título del Problema (opcional)</label>
+            <div class="control">
+                <input class="input" type="text" name="title" placeholder="Ej: Temperatura diaria">
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Método de Interpolación</label>
+            <div class="control">
+                <div class="select is-fullwidth">
+                    <select name="metodo">
+                        <option value="lagrange">Lagrange (polinomios directos)</option>
+                        <option value="newton">Newton (diferencias divididas)</option>
+                        <option value="spline">Spline Cúbico (más suave)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Número de Puntos</label>
+            <div class="control">
+                <div class="select">
+                    <select id="numPuntos" onchange="generarCamposPuntos()">
+                        <option value="3">3 puntos</option>
+                        <option value="4">4 puntos</option>
+                        <option value="5" selected>5 puntos</option>
+                        <option value="6">6 puntos</option>
+                        <option value="7">7 puntos</option>
+                        <option value="8">8 puntos</option>
+                    </select>
+                </div>
+            </div>
+            <p class="help">Mínimo 3 puntos para interpolación</p>
+        </div>
+
+        <div class="field">
+            <label class="label">Puntos (X, Y)</label>
+            <div class="box" style="background-color: #f5f5f5;">
+                <div id="puntosContainer">
+                    <!-- Se generará dinámicamente -->
+                </div>
+                <button type="button" class="button is-small is-link is-light" onclick="cargarEjemplo()">
+                    <span class="icon"><i class="fas fa-magic"></i></span>
+                    <span>Cargar Ejemplo</span>
+                </button>
+            </div>
+        </div>
+
+        <input type="hidden" name="x_points" id="xPointsJSON">
+        <input type="hidden" name="y_points" id="yPointsJSON">
+
+        <div class="field">
+            <label class="label">Evaluar en X (opcional)</label>
+            <div class="control">
+                <input class="input" type="text" name="x_eval" placeholder="Ej: 5">
+            </div>
+            <p class="help">Si quieres evaluar el polinomio en un punto específico, ingrésalo aquí.</p>
+        </div>
+
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-danger" type="submit" onclick="prepararDatos(event)">
+                    <span class="icon"><i class="fas fa-calculator"></i></span>
+                    <span>Interpolar</span>
+                </button>
+            </div>
+            <div class="control">
+                <a href="{{ url_for('method.index') }}" class="button is-light">Cancelar</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+function generarCamposPuntos() {
+    const n = parseInt(document.getElementById('numPuntos').value);
+    const container = document.getElementById('puntosContainer');
+    
+    let html = '<table class="table is-striped is-fullwidth">';
+    html += '<thead><tr><th>Punto</th><th>X</th><th>Y</th></tr></thead><tbody>';
+    
+    for (let i = 0; i < n; i++) {
+        const xDefault = i * 2;
+        const yDefault = 20 + i * 2;
+        html += `
+            <tr>
+                <td><strong>P${i + 1}</strong></td>
+                <td>
+                    <input type="number" step="any" class="input punto-x" 
+                           data-i="${i}" value="${xDefault}" style="width: 120px;" required>
+                </td>
+                <td>
+                    <input type="number" step="any" class="input punto-y" 
+                           data-i="${i}" value="${yDefault}" style="width: 120px;" required>
+                </td>
+            </tr>`;
+    }
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function prepararDatos(event) {
+    event.preventDefault();
+    
+    const n = parseInt(document.getElementById('numPuntos').value);
+    const xPoints = [];
+    const yPoints = [];
+    
+    for (let i = 0; i < n; i++) {
+        const xInput = document.querySelector(`input.punto-x[data-i="${i}"]`);
+        const yInput = document.querySelector(`input.punto-y[data-i="${i}"]`);
+        xPoints.push(parseFloat(xInput.value));
+        yPoints.push(parseFloat(yInput.value));
+    }
+    
+    // Guardar en campos hidden
+    document.getElementById('xPointsJSON').value = JSON.stringify(xPoints);
+    document.getElementById('yPointsJSON').value = JSON.stringify(yPoints);
+    
+    // Enviar formulario
+    document.getElementById('formInterpolacion').submit();
+}
+
+function cargarEjemplo() {
+    document.getElementById('numPuntos').value = '5';
+    generarCamposPuntos();
+    
+    // Ejemplo: Temperatura vs Tiempo
+    const ejemploX = [0, 2, 4, 6, 8];
+    const ejemploY = [20, 25, 28, 26, 22];
+    
+    ejemploX.forEach((val, i) => {
+        const input = document.querySelector(`input.punto-x[data-i="${i}"]`);
+        if (input) input.value = val;
+    });
+    
+    ejemploY.forEach((val, i) => {
+        const input = document.querySelector(`input.punto-y[data-i="${i}"]`);
+        if (input) input.value = val;
+    });
+    
+    // Configurar evaluación en x = 5
+    document.querySelector('input[name="x_eval"]').value = '5';
+}
+
+// Generar campos al cargar la página
+document.addEventListener('DOMContentLoaded', generarCamposPuntos);
+</script>
+{% endblock %}

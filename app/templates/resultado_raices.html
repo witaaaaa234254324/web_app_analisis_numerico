@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Resultado - {{ metodo|upper }}</h1>
+    
+    {% if resultado.convergencia %}
+    <div class="notification is-success">
+        <strong>✓ Raíz encontrada</strong> en {{ resultado.iteraciones_totales }} iteraciones
+    </div>
+    {% else %}
+    <div class="notification is-warning">
+        <strong>⚠ {{ resultado.get('error', 'No se alcanzó la convergencia') }}</strong>
+    </div>
+    {% endif %}
+
+    <div class="box">
+        <h2 class="title is-4">Función</h2>
+        <div class="content">
+            <p class="is-size-5"><code>f(x) = {{ funcion }}</code></p>
+        </div>
+    </div>
+
+    {% if resultado.raiz %}
+    <div class="box has-background-success-light">
+        <h2 class="title is-4">Raíz Encontrada</h2>
+        <div class="content">
+            <p class="is-size-3"><strong>x = {{ "%.10f"|format(resultado.raiz) }}</strong></p>
+            {% if resultado.f_raiz %}
+            <p>Verificación: <code>f({{ "%.10f"|format(resultado.raiz) }}) = {{ "%.2e"|format(resultado.f_raiz) }}</code></p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="columns">
+        <div class="column">
+            <div class="box">
+                <h3 class="title is-5">Información</h3>
+                <table class="table is-narrow">
+                    <tr><td><strong>Método:</strong></td><td>{{ metodo|upper }}</td></tr>
+                    <tr><td><strong>Iteraciones:</strong></td><td>{{ resultado.iteraciones_totales }}</td></tr>
+                    {% if resultado.error_final %}
+                    <tr><td><strong>Error final:</strong></td><td>{{ "%.2e"|format(resultado.error_final) }}</td></tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        <div class="column">
+            <div class="box">
+                <h3 class="title is-5">Convergencia</h3>
+                {% if resultado.errores %}
+                <table class="table is-narrow is-striped">
+                    <thead>
+                        <tr><th>Iter</th><th>Error</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for i in range([8, resultado.errores|length]|min) %}
+                        <tr>
+                            <td>{{ i+1 }}</td>
+                            <td>{{ "%.2e"|format(resultado.errores[i]) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if resultado.historial %}
+    <div class="box">
+        <h3 class="title is-5">Historial de Iteraciones (Últimas 10)</h3>
+        <div class="table-container">
+            <table class="table is-striped is-fullwidth is-narrow">
+                <thead>
+                    <tr>
+                        <th>Iter</th>
+                        {% if metodo == 'newton' %}
+                        <th>x</th>
+                        <th>f(x)</th>
+                        <th>f'(x)</th>
+                        <th>x_nuevo</th>
+                        {% elif metodo == 'biseccion' %}
+                        <th>a</th>
+                        <th>b</th>
+                        <th>c (punto medio)</th>
+                        <th>f(c)</th>
+                        {% elif metodo == 'secante' %}
+                        <th>x₀</th>
+                        <th>x₁</th>
+                        <th>x₂</th>
+                        <th>f(x₁)</th>
+                        {% endif %}
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set start = [0, resultado.historial|length - 10]|max %}
+                    {% for iter in resultado.historial[start:] %}
+                    <tr>
+                        <td>{{ iter.iteracion }}</td>
+                        {% if metodo == 'newton' %}
+                        <td>{{ "%.6f"|format(iter.x) }}</td>
+                        <td>{{ "%.4e"|format(iter['f(x)']) }}</td>
+                        <td>{{ "%.4e"|format(iter['df(x)']) }}</td>
+                        <td>{{ "%.6f"|format(iter.x_new) }}</td>
+                        {% elif metodo == 'biseccion' %}
+                        <td>{{ "%.6f"|format(iter.a) }}</td>
+                        <td>{{ "%.6f"|format(iter.b) }}</td>
+                        <td>{{ "%.6f"|format(iter.c) }}</td>
+                        <td>{{ "%.4e"|format(iter['f(c)']) }}</td>
+                        {% elif metodo == 'secante' %}
+                        <td>{{ "%.6f"|format(iter.x0) }}</td>
+                        <td>{{ "%.6f"|format(iter.x1) }}</td>
+                        <td>{{ "%.6f"|format(iter.x2) }}</td>
+                        <td>{{ "%.4e"|format(iter['f(x1)']) }}</td>
+                        {% endif %}
+                        <td>{{ "%.2e"|format(iter.error) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="buttons">
+        <a href="{{ url_for('method.raices_view') }}" class="button is-warning">Resolver Otro</a>
+        <a href="{{ url_for('method.index') }}" class="button is-light">Volver al Inicio</a>
+        <a href="{{ url_for('method.historial') }}" class="button is-link">Ver Historial</a>
+    </div>
+</div>
+{% endblock %}

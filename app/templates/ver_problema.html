@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">{{ problem.title or 'Problema #' + problem.id|string }}</h1>
+    
+    <div class="box">
+        <div class="level">
+            <div class="level-left">
+                <div class="level-item">
+                    {% if problem.method_type == 'CG' %}
+                    <span class="tag is-info is-large">Gradiente Conjugado</span>
+                    {% elif problem.method_type == 'SOR' %}
+                    <span class="tag is-success is-large">SOR</span>
+                    {% elif problem.method_type == 'ROOTS' %}
+                    <span class="tag is-warning is-large">Raíces de Ecuaciones</span>
+                    {% elif problem.method_type == 'INTERPOLATION' %}
+                    <span class="tag is-danger is-large">Interpolación</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="level-right">
+                <div class="level-item">
+                    <p><strong>Fecha:</strong> {{ problem.created_at.strftime('%d/%m/%Y %H:%M:%S') }}</p>
+                </div>
+                <div class="level-item">
+                    <p><strong>Usuario:</strong> {{ problem.user.username }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datos de Entrada -->
+    <div class="box">
+        <h2 class="title is-4">Datos de Entrada</h2>
+        <div class="content">
+            {% if problem.method_type in ['CG', 'SOR'] %}
+                <p><strong>Matriz A:</strong></p>
+                <pre>{{ input_data.matriz }}</pre>
+                <p><strong>Vector b:</strong></p>
+                <pre>{{ input_data.vector }}</pre>
+                {% if input_data.omega is defined %}
+                <p><strong>Factor omega (ω):</strong> {{ input_data.omega }}</p>
+                {% endif %}
+                <p><strong>Tolerancia:</strong> {{ input_data.tolerancia }}</p>
+                <p><strong>Iteraciones máximas:</strong> {{ input_data.max_iter }}</p>
+                
+            {% elif problem.method_type == 'ROOTS' %}
+                <p><strong>Función:</strong> <code>{{ input_data.funcion }}</code></p>
+                <p><strong>Método:</strong> {{ input_data.metodo|upper }}</p>
+                {% if input_data.x0 is defined %}
+                <p><strong>Punto inicial (x₀):</strong> {{ input_data.x0 }}</p>
+                {% endif %}
+                {% if input_data.x1 is defined %}
+                <p><strong>Segundo punto (x₁):</strong> {{ input_data.x1 }}</p>
+                {% endif %}
+                {% if input_data.a is defined %}
+                <p><strong>Intervalo:</strong> [{{ input_data.a }}, {{ input_data.b }}]</p>
+                {% endif %}
+                <p><strong>Tolerancia:</strong> {{ input_data.tolerancia }}</p>
+                
+            {% elif problem.method_type == 'INTERPOLATION' %}
+                <p><strong>Método:</strong> {{ input_data.metodo|capitalize }}</p>
+                <p><strong>Puntos X:</strong> {{ input_data.x_points }}</p>
+                <p><strong>Puntos Y:</strong> {{ input_data.y_points }}</p>
+                {% if input_data.x_eval %}
+                <p><strong>Evaluado en:</strong> x = {{ input_data.x_eval }}</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="box">
+        <h2 class="title is-4">Resultados</h2>
+        <div class="content">
+            {% if problem.method_type in ['CG', 'SOR'] %}
+                {% if result_data.convergencia %}
+                <div class="notification is-success">
+                    ✓ Convergencia exitosa en {{ result_data.iteraciones_totales }} iteraciones
+                </div>
+                {% else %}
+                <div class="notification is-warning">
+                    ⚠ No convergió en {{ result_data.iteraciones_totales }} iteraciones
+                </div>
+                {% endif %}
+                
+                <p><strong>Solución:</strong></p>
+                <table class="table is-narrow is-striped">
+                    <thead>
+                        <tr><th>Variable</th><th>Valor</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for i in range(result_data.solucion|length) %}
+                        <tr>
+                            <td>x<sub>{{ i+1 }}</sub></td>
+                            <td>{{ "%.8f"|format(result_data.solucion[i]) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p><strong>Error final:</strong> {{ "%.2e"|format(result_data.error_final) }}</p>
+                
+            {% elif problem.method_type == 'ROOTS' %}
+                {% if result_data.convergencia %}
+                <div class="notification is-success">
+                    ✓ Raíz encontrada en {{ result_data.iteraciones_totales }} iteraciones
+                </div>
+                <p class="is-size-4"><strong>Raíz:</strong> x = {{ "%.10f"|format(result_data.raiz) }}</p>
+                {% if result_data.f_raiz is defined %}
+                <p><strong>Verificación:</strong> f({{ "%.10f"|format(result_data.raiz) }}) = {{ "%.2e"|format(result_data.f_raiz) }}</p>
+                {% endif %}
+                {% else %}
+                <div class="notification is-warning">
+                    ⚠ {{ result_data.get('error', 'No convergió') }}
+                </div>
+                {% endif %}
+                
+            {% elif problem.method_type == 'INTERPOLATION' %}
+                <p><strong>Tipo:</strong> {{ result_data.tipo }}</p>
+                <p><strong>Grado del polinomio:</strong> {{ result_data.grado }}</p>
+                {% if result_data.x_evaluado is defined %}
+                <p class="is-size-4"><strong>Valor interpolado:</strong> 
+                   Para x = {{ result_data.x_evaluado }}, y ≈ {{ "%.6f"|format(result_data.y_evaluado) }}</p>
+                {% endif %}
+                {% if result_data.coeficientes is defined %}
+                <p><strong>Coeficientes:</strong> {{ result_data.coeficientes[:5] }}...</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="buttons">
+        <a href="{{ url_for('method.historial') }}" class="button is-link">Volver al Historial</a>
+        <a href="{{ url_for('method.index') }}" class="button is-light">Volver a Métodos</a>
+        {% if current_user.has_role('admin') or problem.user_id == current_user.id %}
+        <a href="{{ url_for('method.delete_problema', id=problem.id) }}" 
+           class="button is-danger"
+           onclick="return confirm('¿Estás seguro de eliminar este problema?')">Eliminar</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Resultado - Gradiente Conjugado</h1>
+    
+    {% if resultado.convergencia %}
+    <div class="notification is-success">
+        <strong>✓ Convergencia exitosa</strong> en {{ resultado.iteraciones_totales }} iteraciones
+    </div>
+    {% else %}
+    <div class="notification is-warning">
+        <strong>⚠ No se alcanzó la convergencia</strong> en {{ resultado.iteraciones_totales }} iteraciones
+    </div>
+    {% endif %}
+
+    <div class="box">
+        <h2 class="title is-4">Sistema de Ecuaciones</h2>
+        <div class="content">
+            <p><strong>Matriz A:</strong></p>
+            <table class="table is-bordered">
+                {% for fila in matriz %}
+                <tr>
+                    {% for valor in fila %}
+                    <td>{{ "%.4f"|format(valor) }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+            
+            <p><strong>Vector b:</strong> {{ vector }}</p>
+        </div>
+    </div>
+
+    <div class="box">
+        <h2 class="title is-4">Solución</h2>
+        <div class="content">
+            <table class="table is-striped is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(resultado.solucion|length) %}
+                    <tr>
+                        <td><strong>x<sub>{{ i+1 }}</sub></strong></td>
+                        <td>{{ "%.8f"|format(resultado.solucion[i]) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column">
+            <div class="box">
+                <h3 class="title is-5">Información de Convergencia</h3>
+                <table class="table is-narrow">
+                    <tr><td><strong>Iteraciones:</strong></td><td>{{ resultado.iteraciones_totales }}</td></tr>
+                    <tr><td><strong>Error final:</strong></td><td>{{ "%.2e"|format(resultado.error_final) }}</td></tr>
+                    <tr><td><strong>Convergencia:</strong></td><td>{{ "Sí" if resultado.convergencia else "No" }}</td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="column">
+            <div class="box">
+                <h3 class="title is-5">Evolución del Residuo</h3>
+                <p>Primeras 10 iteraciones:</p>
+                <table class="table is-narrow is-striped">
+                    <thead>
+                        <tr><th>Iter</th><th>Residuo</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for i in range([10, resultado.residuos|length]|min) %}
+                        <tr>
+                            <td>{{ i+1 }}</td>
+                            <td>{{ "%.2e"|format(resultado.residuos[i]) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <a href="{{ url_for('method.gradiente_conjugado_view') }}" class="button is-info">Resolver Otro</a>
+        <a href="{{ url_for('method.index') }}" class="button is-light">Volver al Inicio</a>
+        <a href="{{ url_for('method.historial') }}" class="button is-link">Ver Historial</a>
+    </div>
+</div>
+{% endblock %}

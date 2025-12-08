@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero is-medium">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class="animate__animated animate__fadeInDown">
+                <span class="icon is-large has-text-white" style="font-size: 5rem; margin-bottom: 1rem; display: block;">
+                    <i class="fas fa-chart-line"></i>
+                </span>
+            </div>
+            <h1 class="title is-1 has-text-white animate__animated animate__fadeInDown" style="text-shadow: 2px 2px 10px rgba(0,0,0,0.3); font-size: 3rem; animation-delay: 0.2s;">
+                Métodos de Análisis Numérico
+            </h1>
+            <p class="subtitle is-4 has-text-white-ter mt-4 animate__animated animate__fadeInUp" style="text-shadow: 1px 1px 5px rgba(0,0,0,0.3);">
+                Calculadora interactiva para resolver problemas matemáticos avanzados
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="columns is-multiline">
+        <!-- Gradiente Conjugado -->
+        <div class="column is-6">
+            <div class="card method-card">
+                <header class="card-header">
+                    <p class="card-header-title is-size-4">
+                        <span class="icon is-large has-text-info">
+                            <i class="fas fa-vector-square fa-2x"></i>
+                        </span>
+                        <span style="margin-left: 10px;">Gradiente Conjugado (CG)</span>
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <p class="has-text-justified">
+                            <strong class="has-text-info">🎯 Aplicación:</strong> Resolución eficiente de sistemas lineales Ax = b con matrices simétricas y definidas positivas.
+                        </p>
+                        <p class="has-text-justified">
+                            <strong class="has-text-info">💡 Ejemplo práctico:</strong> Análisis estructural de edificios, problemas de optimización convexa, simulación de ecuaciones de calor.
+                        </p>
+                        <div class="tags mt-4">
+                            <span class="tag is-info is-medium">Convergencia Rápida</span>
+                            <span class="tag is-info is-light is-medium">Matrices Grandes</span>
+                            <span class="tag is-info is-light is-medium">Método Iterativo</span>
+                        </div>
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    <a href="{{ url_for('method.gradiente_conjugado_view') }}" class="card-footer-item">
+                        <button class="button is-info is-fullwidth is-medium">
+                            <span class="icon"><i class="fas fa-play-circle"></i></span>
+                            <span>Resolver Sistema</span>
+                        </button>
+                    </a>
+                </footer>
+            </div>
+        </div>
+
+        <!-- SOR -->
+        <div class="column is-6">
+            <div class="card method-card">
+                <header class="card-header">
+                    <p class="card-header-title is-size-4">
+                        <span class="icon is-large has-text-success">
+                            <i class="fas fa-chart-line fa-2x"></i>
+                        </span>
+                        <span style="margin-left: 10px;">Sobre-relajación Sucesiva (SOR)</span>
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <p class="has-text-justified">
+                            <strong class="has-text-success">🎯 Aplicación:</strong> Resolución de sistemas lineales grandes con convergencia acelerada mediante parámetro de relajación ω.
+                        </p>
+                        <p class="has-text-justified">
+                            <strong class="has-text-success">💡 Ejemplo práctico:</strong> Ecuaciones diferenciales parciales, simulación de fluidos dinámicos, transferencia de calor.
+                        </p>
+                        <div class="tags mt-4">
+                            <span class="tag is-success is-medium">Parámetro ω Ajustable</span>
+                            <span class="tag is-success is-light is-medium">Mejora Gauss-Seidel</span>
+                            <span class="tag is-success is-light is-medium">Convergencia Acelerada</span>
+                        </div>
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    <a href="{{ url_for('method.sor_view') }}" class="card-footer-item">
+                        <button class="button is-success is-fullwidth is-medium">
+                            <span class="icon"><i class="fas fa-play-circle"></i></span>
+                            <span>Resolver Sistema</span>
+                        </button>
+                    </a>
+                </footer>
+            </div>
+        </div>
+
+        <!-- Raíces de Ecuaciones -->
+        <div class="column is-6">
+            <div class="card method-card">
+                <header class="card-header">
+                    <p class="card-header-title is-size-4">
+                        <span class="icon is-large has-text-warning">
+                            <i class="fas fa-square-root-alt fa-2x"></i>
+                        </span>
+                        <span style="margin-left: 10px;">Raíces de Ecuaciones</span>
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <p class="has-text-justified">
+                            <strong class="has-text-warning-dark">🎯 Aplicación:</strong> Encontrar soluciones de ecuaciones no lineales f(x) = 0 con tres métodos diferentes.
+                        </p>
+                        <p class="has-text-justified">
+                            <strong class="has-text-warning-dark">💡 Ejemplo práctico:</strong> Cálculo de puntos de equilibrio en física, diseño de circuitos electrónicos, análisis de rendimiento.
+                        </p>
+                        <div class="tags mt-4">
+                            <span class="tag is-warning is-medium">Newton-Raphson</span>
+                            <span class="tag is-warning is-light is-medium">Bisección</span>
+                            <span class="tag is-warning is-light is-medium">Secante</span>
+                        </div>
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    <a href="{{ url_for('method.raices_view') }}" class="card-footer-item">
+                        <button class="button is-warning is-fullwidth is-medium">
+                            <span class="icon"><i class="fas fa-play-circle"></i></span>
+                            <span>Encontrar Raíces</span>
+                        </button>
+                    </a>
+                </footer>
+            </div>
+        </div>
+
+        <!-- Interpolación -->
+        <div class="column is-6">
+            <div class="card method-card">
+                <header class="card-header">
+                    <p class="card-header-title is-size-4">
+                        <span class="icon is-large has-text-danger">
+                            <i class="fas fa-project-diagram fa-2x"></i>
+                        </span>
+                        <span style="margin-left: 10px;">Interpolación</span>
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <p class="has-text-justified">
+                            <strong class="has-text-danger">🎯 Aplicación:</strong> Estimar valores entre puntos de datos conocidos usando polinomios y splines.
+                        </p>
+                        <p class="has-text-justified">
+                            <strong class="has-text-danger">💡 Ejemplo práctico:</strong> Predicción de datos faltantes, procesamiento de señales digitales, generación de gráficos suavizados.
+                        </p>
+                        <div class="tags mt-4">
+                            <span class="tag is-danger is-medium">Lagrange</span>
+                            <span class="tag is-danger is-light is-medium">Newton</span>
+                            <span class="tag is-danger is-light is-medium">Splines Cúbicos</span>
+                        </div>
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    <a href="{{ url_for('method.interpolacion_view') }}" class="card-footer-item">
+                        <button class="button is-danger is-fullwidth is-medium">
+                            <span class="icon"><i class="fas fa-play-circle"></i></span>
+                            <span>Interpolar Datos</span>
+                        </button>
+                    </a>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historial -->
+    <div class="box mt-6 has-text-centered" style="padding: 3rem;">
+        <h2 class="title is-3">
+            <span class="icon is-large has-text-link">
+                <i class="fas fa-history fa-2x"></i>
+            </span>
+            <br>
+            Historial de Problemas Resueltos
+        </h2>
+        <p class="subtitle is-5 mt-3">
+            Todos tus cálculos se guardan automáticamente. Puedes consultarlos, compararlos y descargarlos en cualquier momento.
+        </p>
+        <a href="{{ url_for('method.historial') }}" class="button is-link is-large mt-4">
+            <span class="icon"><i class="fas fa-list"></i></span>
+            <span>Ver Mi Historial Completo</span>
+        </a>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="columns is-multiline mt-5">
+        <div class="column is-4">
+            <div class="box has-text-centered" style="height: 100%;">
+                <span class="icon is-large has-text-info">
+                    <i class="fas fa-brain fa-3x"></i>
+                </span>
+                <h3 class="title is-5 mt-3">Precisión Matemática</h3>
+                <p>Algoritmos implementados con NumPy y SciPy para garantizar resultados exactos y confiables.</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="box has-text-centered" style="height: 100%;">
+                <span class="icon is-large has-text-success">
+                    <i class="fas fa-tachometer-alt fa-3x"></i>
+                </span>
+                <h3 class="title is-5 mt-3">Rendimiento Optimizado</h3>
+                <p>Cálculos rápidos incluso para sistemas de gran tamaño con miles de variables.</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="box has-text-centered" style="height: 100%;">
+                <span class="icon is-large has-text-danger">
+                    <i class="fas fa-shield-alt fa-3x"></i>
+                </span>
+                <h3 class="title is-5 mt-3">Datos Seguros</h3>
+                <p>Tu historial personal está protegido. Solo tú puedes acceder a tus problemas resueltos.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .method-card {
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .method-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+    }
+    
+    .hero {
+        background: linear-gradient(135deg, rgba(72,199,142,0.1), rgba(72,126,176,0.1));
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}

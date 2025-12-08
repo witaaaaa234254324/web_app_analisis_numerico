@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Raíces de Ecuaciones</h1>
+    <p class="subtitle">Encuentra soluciones de ecuaciones no lineales f(x) = 0</p>
+
+    <div class="box">
+        <h2 class="title is-4">Ejemplos Prácticos</h2>
+        <div class="content">
+            <p><strong>Ejemplo 1:</strong> <code>x**3 - 2*x - 5</code> (Punto inicial x₀ = 2)</p>
+            <p><strong>Ejemplo 2:</strong> <code>x**2 - 4</code> (Raíces en ±2)</p>
+            <p><strong>Ejemplo 3:</strong> <code>np.exp(x) - 3*x</code> (Para bisección use intervalo [0, 2])</p>
+            <p><strong>Ejemplo 4:</strong> <code>np.sin(x) - 0.5</code></p>
+            <p class="help">Usa <code>np</code> para funciones matemáticas: np.sin, np.cos, np.exp, np.log, np.sqrt</p>
+        </div>
+    </div>
+
+    <form method="POST" class="box">
+        <div class="field">
+            <label class="label">Título del Problema (opcional)</label>
+            <div class="control">
+                <input class="input" type="text" name="title" placeholder="Ej: Ecuación cúbica">
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Función f(x)</label>
+            <div class="control">
+                <input class="input" type="text" name="funcion" required
+                    placeholder="x**3 - 2*x - 5" value="x**3 - 2*x - 5">
+            </div>
+            <p class="help">Usa notación Python: ** para potencia, * para multiplicación. Usa 'np.' para funciones especiales.</p>
+        </div>
+
+        <div class="field">
+            <label class="label">Método</label>
+            <div class="control">
+                <div class="select is-fullwidth">
+                    <select name="metodo" id="metodo" onchange="mostrarCampos()">
+                        <option value="newton">Newton-Raphson (convergencia rápida)</option>
+                        <option value="biseccion">Bisección (robusto, requiere intervalo)</option>
+                        <option value="secante">Secante (sin derivadas)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campos para Newton-Raphson -->
+        <div id="campos_newton">
+            <div class="field">
+                <label class="label">Punto Inicial (x₀)</label>
+                <div class="control">
+                    <input class="input" type="text" name="x0" value="2">
+                </div>
+            </div>
+        </div>
+
+        <!-- Campos para Bisección -->
+        <div id="campos_biseccion" style="display:none;">
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label class="label">Extremo izquierdo (a)</label>
+                        <div class="control">
+                            <input class="input" type="text" name="a" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="field">
+                        <label class="label">Extremo derecho (b)</label>
+                        <div class="control">
+                            <input class="input" type="text" name="b" value="3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="help">La función debe cambiar de signo en [a, b]</p>
+        </div>
+
+        <!-- Campos para Secante -->
+        <div id="campos_secante" style="display:none;">
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label class="label">Primer punto (x₀)</label>
+                        <div class="control">
+                            <input class="input" type="text" name="x0" value="2">
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="field">
+                        <label class="label">Segundo punto (x₁)</label>
+                        <div class="control">
+                            <input class="input" type="text" name="x1" value="3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column">
+                <div class="field">
+                    <label class="label">Tolerancia</label>
+                    <div class="control">
+                        <input class="input" type="text" name="tolerancia" value="0.000001">
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="label">Iteraciones Máximas</label>
+                    <div class="control">
+                        <input class="input" type="number" name="max_iter" value="100">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-warning" type="submit">
+                    <span class="icon"><i class="fas fa-calculator"></i></span>
+                    <span>Calcular Raíz</span>
+                </button>
+            </div>
+            <div class="control">
+                <a href="{{ url_for('method.index') }}" class="button is-light">Cancelar</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+function mostrarCampos() {
+    const metodo = document.getElementById('metodo').value;
+    document.getElementById('campos_newton').style.display = 'none';
+    document.getElementById('campos_biseccion').style.display = 'none';
+    document.getElementById('campos_secante').style.display = 'none';
+    
+    if (metodo === 'newton') {
+        document.getElementById('campos_newton').style.display = 'block';
+    } else if (metodo === 'biseccion') {
+        document.getElementById('campos_biseccion').style.display = 'block';
+    } else if (metodo === 'secante') {
+        document.getElementById('campos_secante').style.display = 'block';
+    }
+}
+</script>
+{% endblock %}

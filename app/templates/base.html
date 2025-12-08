@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <title>{{ title }} | Análisis Numérico</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --danger-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-image-slice: 1;
+        }
+        
+        .navbar-brand strong {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+        
+        .navbar-item {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 0 4px;
+        }
+        
+        .navbar-item:hover {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            transform: translateY(-2px);
+        }
+        
+        .navbar-dropdown {
+            border: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .section {
+            background: transparent;
+        }
+        
+        .box {
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .box .title, .box .subtitle, .box p, .box .content {
+            color: #363636 !important;
+        }
+        
+        .box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: none;
+            background: rgba(255, 255, 255, 0.98) !important;
+        }
+        
+        .card-content {
+            background: rgba(255, 255, 255, 0.98) !important;
+        }
+        
+        .card-content .title, .card-content .content, .card-content p, .card-content .content p {
+            color: #363636 !important;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            border-radius: 20px 20px 0 0 !important;
+        }
+        
+        .button {
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input, .textarea, .select select {
+            background-color: #ffffff !important;
+            color: #363636 !important;
+            border: 2px solid #dbdbdb;
+            border-radius: 8px;
+        }
+        
+        .input::placeholder, .textarea::placeholder {
+            color: #b5b5b5 !important;
+        }
+        
+        .label, .help {
+            color: #363636 !important;
+            font-weight: 600;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .button.is-info {
+            background: var(--info-gradient);
+            color: white;
+        }
+        
+        .button.is-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .button.is-warning {
+            background: var(--warning-gradient);
+            color: white;
+        }
+        
+        .button.is-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+        
+        .button.is-link {
+            background: var(--dark-gradient);
+            color: white;
+        }
+        
+        .input, .textarea, .select select {
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .input:focus, .textarea:focus, .select select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+        }
+        
+        .table {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff !important;
+        }
+        
+        .table tbody td, .table tbody th {
+            color: #363636 !important;
+            background-color: #ffffff !important;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(72, 199, 142, 0.05) !important;
+        }
+        
+        .table thead {
+            background: var(--primary-gradient);
+        }
+        
+        .table thead th {
+            color: white !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .notification {
+            border-radius: 16px;
+            border-left: 5px solid;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: slideInRight 0.5s ease;
+        }
+        
+        .notification.is-success {
+            border-left-color: #38ef7d;
+            background: linear-gradient(135deg, #11998e15 0%, #38ef7d15 100%);
+        }
+        
+        .notification.is-danger {
+            border-left-color: #ff6b6b;
+            background: linear-gradient(135deg, #ff6b6b15 0%, #ee5a6f15 100%);
+        }
+        
+        .notification.is-info {
+            border-left-color: #4facfe;
+            background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%);
+        }
+        
+        .tag {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 0.5em 1em;
+        }
+        
+        .tag.is-info {
+            background: var(--info-gradient);
+            color: white;
+        }
+        
+        .tag.is-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .tag.is-warning {
+            background: var(--warning-gradient);
+            color: white;
+        }
+        
+        .tag.is-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+        
+        .footer {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 2rem 1rem;
+            margin-top: 4rem;
+        }
+        
+        .title, .subtitle {
+            color: #2c3e50;
+        }
+        
+        .hero {
+            background: transparent;
+        }
+        
+        .hero-body {
+            padding: 3rem 1.5rem;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+        
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        
+        /* Loader personalizado */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="{{ url_for('method.index') if current_user.is_authenticated else url_for('user.login') }}">
+                    <span class="icon is-large has-text-primary">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </span>
+                    <strong style="margin-left: 10px;">Análisis Numérico</strong>
+                </a>
+                
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+
+            {% if current_user.is_authenticated %}
+            <div id="navbarMenu" class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" href="{{ url_for('method.index') }}">
+                        <span class="icon has-text-info">
+                            <i class="fas fa-home"></i>
+                        </span>
+                        <span>Inicio</span>
+                    </a>
+                    
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">
+                            <span class="icon has-text-primary">
+                                <i class="fas fa-calculator"></i>
+                            </span>
+                            <span>Métodos</span>
+                        </a>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="{{ url_for('method.gradiente_conjugado_view') }}">
+                                <span class="icon has-text-info">
+                                    <i class="fas fa-vector-square"></i>
+                                </span>
+                                <span>Gradiente Conjugado</span>
+                            </a>
+                            <a class="navbar-item" href="{{ url_for('method.sor_view') }}">
+                                <span class="icon has-text-success">
+                                    <i class="fas fa-chart-line"></i>
+                                </span>
+                                <span>SOR</span>
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{{ url_for('method.raices_view') }}">
+                                <span class="icon has-text-warning">
+                                    <i class="fas fa-square-root-alt"></i>
+                                </span>
+                                <span>Raíces de Ecuaciones</span>
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{{ url_for('method.interpolacion_view') }}">
+                                <span class="icon has-text-danger">
+                                    <i class="fas fa-project-diagram"></i>
+                                </span>
+                                <span>Interpolación</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <a class="navbar-item" href="{{ url_for('method.historial') }}">
+                        <span class="icon has-text-link">
+                            <i class="fas fa-history"></i>
+                        </span>
+                        <span>Historial</span>
+                    </a>
+
+                    {% if current_user.has_role("admin") %}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">
+                            <span class="icon has-text-danger">
+                                <i class="fas fa-cog"></i>
+                            </span>
+                            <span>Admin</span>
+                        </a>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="{{ url_for('user.list_users') }}">
+                                <span class="icon">
+                                    <i class="fas fa-users"></i>
+                                </span>
+                                <span>Gestionar Usuarios</span>
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a href="{{ url_for('user.profile', id=current_user.id) }}" class="button is-light">
+                                <span class="icon">
+                                    <i class="fas fa-user-circle"></i>
+                                </span>
+                                <span>{{ current_user.username }}</span>
+                            </a>
+                            <a href="{{ url_for('user.logout') }}" class="button is-danger is-light">
+                                <span class="icon">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </span>
+                                <span>Salir</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container" style="margin-top: 80px;">
+                {% for category, message in messages %}
+                <div class="notification is-{{ 'danger' if category == 'error' else category }} animate__animated animate__fadeInRight">
+                    <button class="delete"></button>
+                    <strong>
+                        {% if category == 'success' %}
+                        <i class="fas fa-check-circle"></i>
+                        {% elif category == 'error' or category == 'danger' %}
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% else %}
+                        <i class="fas fa-info-circle"></i>
+                        {% endif %}
+                    </strong>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <section class="section" style="margin-top: 60px; min-height: calc(100vh - 200px);">
+        <div class="container fade-in-up">
+            {% block content %}{% endblock %}
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p class="has-text-white">
+                <strong class="has-text-white">Análisis Numérico INF-133</strong>
+                <br>
+                <span style="opacity: 0.8;">
+                    Aplicación Web de Métodos Numéricos - 2025
+                </span>
+            </p>
+            <p class="has-text-white" style="opacity: 0.7;">
+                <span class="icon"><i class="fas fa-chart-line"></i></span>
+                Gradiente Conjugado • SOR • Raíces • Interpolación
+            </p>
+            <p class="mt-4">
+                <a href="https://github.com" class="button is-light is-rounded" target="_blank">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>GitHub</span>
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Cerrar notificaciones
+        document.addEventListener('DOMContentLoaded', () => {
+            // Burger menu
+            const burger = document.querySelector('.navbar-burger');
+            const menu = document.querySelector('.navbar-menu');
+            
+            if (burger) {
+                burger.addEventListener('click', () => {
+                    burger.classList.toggle('is-active');
+                    menu.classList.toggle('is-active');
+                });
+            }
+            
+            // Cerrar notificaciones
+            (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+                const $notification = $delete.parentNode;
+                $delete.addEventListener('click', () => {
+                    $notification.classList.add('animate__animated', 'animate__fadeOutRight');
+                    setTimeout(() => {
+                        $notification.parentNode.removeChild($notification);
+                    }, 500);
+                });
+                
+                // Auto cerrar después de 5 segundos
+                setTimeout(() => {
+                    if ($notification.parentNode) {
+                        $notification.classList.add('animate__animated', 'animate__fadeOutRight');
+                        setTimeout(() => {
+                            if ($notification.parentNode) {
+                                $notification.parentNode.removeChild($notification);
+                            }
+                        }, 500);
+                    }
+                }, 5000);
+            });
+            
+            // Animación de entrada suave
+            const boxes = document.querySelectorAll('.box, .card');
+            boxes.forEach((box, index) => {
+                box.style.animationDelay = `${index * 0.1}s`;
+                box.classList.add('animate__animated', 'animate__fadeInUp');
+            });
+        });
+    </script>
+</body>
+</html>
