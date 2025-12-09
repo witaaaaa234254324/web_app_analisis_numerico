@@ -1,6 +1,51 @@
 # 📊 Análisis Numérico - Aplicación Web
 
-Aplicación web desarrollada con Flask para resolver problemas de Análisis Numérico.
+<div align="center">
+
+![Flask](https://img.shields.io/badge/Flask-3.0.0-000000?style=for-the-badge&logo=flask&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-1.26.4-013243?style=for-the-badge&logo=numpy&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Online-success?style=for-the-badge)
+
+### 🚀 [**VER APLICACIÓN EN VIVO**](https://erickxdps.pythonanywhere.com/metodos) 🚀
+
+*Aplicación web profesional desarrollada con Flask para resolver problemas de Análisis Numérico*
+
+[Demo en Vivo](https://erickxdps.pythonanywhere.com/metodos) • [Características](#-métodos-implementados) • [Instalación](#-instalación-y-configuración) • [Uso](#-ejemplos-de-uso)
+
+</div>
+
+---
+
+---
+
+## ⚡ Quick Start
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/witaaaaa234254324/web_app_analisis_numerico.git
+cd web_app_analisis_numerico
+
+# 2. Crear entorno virtual
+python -m venv venv
+.\venv\Scripts\Activate.ps1  # Windows
+# source venv/bin/activate    # Linux/Mac
+
+# 3. Instalar dependencias
+pip install -r requirements.txt
+
+# 4. Ejecutar la aplicación
+cd app
+python run.py
+
+# 5. Abrir en navegador
+# http://127.0.0.1:5000
+```
+
+O simplemente usa la **[versión online](https://erickxdps.pythonanywhere.com/metodos)** 🚀
+
+---
 
 ## 🎯 Métodos Implementados
 
@@ -26,65 +71,61 @@ Aplicación web desarrollada con Flask para resolver problemas de Análisis Num�
 - **Splines Cúbicos**: Curvas suaves
 - Aplicación: Predicción de datos, procesamiento de señales
 
-## 🚀 Instalación y Configuración
+## 🚀 Instalación Local (Opcional)
 
-### Requisitos Previos
-- Python 3.8 o superior
-- pip (gestor de paquetes de Python)
+> 💡 **Nota:** Puedes usar directamente la [aplicación online](https://erickxdps.pythonanywhere.com/metodos) sin instalar nada
 
-### Pasos de Instalación
+### Requisitos
+- Python 3.8+ 
+- pip
 
-1. **Clonar el repositorio o descargar el proyecto**
+### Instalación Rápida
 
-2. **Crear un entorno virtual (recomendado)**
+**1. Clonar y configurar entorno:**
 ```powershell
-cd web_app_rol_dulceria
+git clone https://github.com/witaaaaa234254324/web_app_analisis_numerico.git
+cd web_app_analisis_numerico
 python -m venv venv
-.\venv\Scripts\Activate.ps1
+.\venv\Scripts\Activate.ps1  # Windows PowerShell
 ```
 
-3. **Instalar dependencias**
+**2. Instalar dependencias:**
 ```powershell
 pip install -r requirements.txt
 ```
 
-4. **Inicializar la base de datos**
+**3. Ejecutar aplicación:**
 ```powershell
 cd app
-python
-```
-En el intérprete de Python:
-```python
-from run import app, db
-from models.user_model import User
-with app.app_context():
-    db.create_all()
-    # Crear usuario admin por defecto
-    admin = User("Admin", "Sistema", "admin", "admin123", role="admin")
-    admin.save()
-    # Crear usuario normal
-    user = User("Usuario", "Demo", "user", "user123", role="user")
-    user.save()
-    print("Base de datos inicializada")
-exit()
-```
-
-5. **Ejecutar la aplicación**
-```powershell
 python run.py
 ```
 
-6. **Abrir en el navegador**
+**4. Abrir navegador:**
 ```
 http://127.0.0.1:5000
 ```
 
-## 👤 Usuarios por Defecto
+### 🎉 Usuarios Locales
 
-| Usuario | Contraseña | Rol |
-|---------|------------|-----|
-| admin | admin123 | Administrador |
-| user | user123 | Usuario |
+Al ejecutar por primera vez, se crean automáticamente:
+- **Admin:** `admin` / `admin123`
+- **Usuario:** `user` / `user123`
+
+---
+
+## 🌐 Aplicación en Producción
+
+### 🎯 Acceso Directo:
+**URL:** https://erickxdps.pythonanywhere.com/metodos
+
+### 👤 Usuarios de Prueba (Demo Online)
+
+| Usuario | Contraseña | Rol | Permisos |
+|---------|------------|-----|----------|
+| `admin` | `admin123` | 👑 Administrador | Acceso total + Gestión de usuarios |
+| `user` | `user123` | 👤 Usuario | Resolver problemas + Ver historial |
+
+> 💡 **Tip:** Puedes crear tu propia cuenta usando la opción "Registrarse"
 
 ## 📁 Estructura del Proyecto
 
@@ -186,19 +227,107 @@ Evaluar en: 5
 
 Trabajo Práctico: Aplicación Web de Métodos Numéricos
 
-## 🚀 Deploy en Producción
+## 🚀 Despliegue en Producción
 
-Para desplegar en un servidor web (Heroku, PythonAnywhere, etc.), asegúrate de:
+### ✅ Esta aplicación está desplegada en:
+- **Plataforma:** PythonAnywhere
+- **URL:** https://erickxdps.pythonanywhere.com/metodos
+- **Estado:** 🟢 Online 24/7
+- **HTTPS:** ✅ Habilitado
 
-1. Configurar variables de entorno para SECRET_KEY
-2. Usar una base de datos más robusta (PostgreSQL, MySQL)
-3. Configurar HTTPS
-4. Ajustar DEBUG=False en producción
+### 📦 Opciones de Despliegue
 
-## 📧 Soporte
+Si deseas desplegar tu propia instancia:
 
-Para problemas o consultas sobre la aplicación, revisar la documentación de Flask y las librerías utilizadas.
+1. **PythonAnywhere** (Recomendado - GRATIS)
+   - Sigue la guía: `GUIA_PYTHONANYWHERE.md`
+   - 100% gratuito, no se duerme
+   
+2. **Railway.app** (Moderna)
+   - Sigue la guía: `GUIA_RAILWAY.md`
+   - $5 USD/mes incluidos
+   
+3. **Otras opciones:** Ver `MEJORES_OPCIONES_DEPLOY.md`
+
+### 🔒 Configuración de Seguridad en Producción
+
+Para tu propio deploy:
+1. Configura `SECRET_KEY` como variable de entorno
+2. Cambia las contraseñas por defecto
+3. Ajusta `FLASK_ENV=production`
+4. Habilita HTTPS
 
 ---
 
-**Desarrollado con ❤️ para INF-133**
+## 📸 Capturas de Pantalla
+
+<div align="center">
+
+### 🏠 Página Principal
+![Métodos](https://img.shields.io/badge/Ver-Demo_en_Vivo-blue?style=for-the-badge)
+
+### 🧮 Gradiente Conjugado
+*Resolución de sistemas lineales con visualización de iteraciones*
+
+### 📊 Historial de Problemas
+*Todos tus cálculos guardados y organizados*
+
+### 👥 Panel de Administración
+*Gestión completa de usuarios (solo admin)*
+
+</div>
+
+---
+
+## 🎯 Características Destacadas
+
+- ✨ **Interfaz moderna y responsiva** con Bulma CSS
+- 🔒 **Sistema de autenticación seguro** con Flask-Login
+- 💾 **Guardado automático** de todos los cálculos
+- 📊 **Visualización de resultados** con tablas de iteraciones
+- 👥 **Roles de usuario** (Admin/Usuario)
+- 📱 **Compatible con móviles** (Responsive Design)
+- ⚡ **Cálculos rápidos** con NumPy y SciPy
+- 🎨 **Sintaxis matemática** intuitiva para funciones
+- 🌐 **Desplegada 24/7** sin caídas
+
+---
+
+## 🤝 Contribuciones
+
+Este es un proyecto académico para **INF-133 - Análisis Numérico**.
+
+### Desarrollador
+- **GitHub:** [@witaaaaa234254324](https://github.com/witaaaaa234254324)
+- **Proyecto:** [web_app_analisis_numerico](https://github.com/witaaaaa234254324/web_app_analisis_numerico)
+
+---
+
+## 📄 Licencia
+
+Este proyecto es de código abierto y está disponible bajo la licencia MIT.
+
+---
+
+## 📧 Soporte
+
+Para problemas o consultas:
+- 🐛 **Issues:** [GitHub Issues](https://github.com/witaaaaa234254324/web_app_analisis_numerico/issues)
+- 📚 **Documentación:** Ver archivos `GUIA_*.md`
+- 🌐 **Demo:** https://erickxdps.pythonanywhere.com/metodos
+
+---
+
+<div align="center">
+
+### 🌟 ¡Prueba la aplicación ahora!
+
+[![Abrir Aplicación](https://img.shields.io/badge/🚀_Abrir_Aplicación-Online-success?style=for-the-badge)](https://erickxdps.pythonanywhere.com/metodos)
+
+**Desarrollado con ❤️ para Análisis Numérico**
+
+![Made with Python](https://img.shields.io/badge/Made_with-Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Powered by Flask](https://img.shields.io/badge/Powered_by-Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+![Deployed on PythonAnywhere](https://img.shields.io/badge/Deployed_on-PythonAnywhere-1e8449?style=for-the-badge)
+
+</div>
