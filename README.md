@@ -11,6 +11,7 @@
 ### 🚀 [**VER APLICACIÓN EN VIVO**](https://erickxdps.pythonanywhere.com/metodos) 🚀
 
 *Aplicación web profesional desarrollada con Flask para resolver problemas de Análisis Numérico*
+#Recuerda que para acceder a la demo el usuario y la contraseña es admin por primera vez#
 
 [Demo en Vivo](https://erickxdps.pythonanywhere.com/metodos) • [Características](#-métodos-implementados) • [Instalación](#-instalación-y-configuración) • [Uso](#-ejemplos-de-uso)
 
@@ -108,8 +109,7 @@ http://127.0.0.1:5000
 ### 🎉 Usuarios Locales
 
 Al ejecutar por primera vez, se crean automáticamente:
-- **Admin:** `admin` / `admin123`
-- **Usuario:** `user` / `user123`
+- **Admin:** `admin` / `admin`
 
 ---
 
@@ -122,8 +122,7 @@ Al ejecutar por primera vez, se crean automáticamente:
 
 | Usuario | Contraseña | Rol | Permisos |
 |---------|------------|-----|----------|
-| `admin` | `admin123` | 👑 Administrador | Acceso total + Gestión de usuarios |
-| `user` | `user123` | 👤 Usuario | Resolver problemas + Ver historial |
+| `admin` | `admin` | 👑 Administrador | Acceso total + Gestión de usuarios |
 
 > 💡 **Tip:** Puedes crear tu propia cuenta usando la opción "Registrarse"
 
@@ -331,3 +330,4 @@ Para problemas o consultas:
 ![Deployed on PythonAnywhere](https://img.shields.io/badge/Deployed_on-PythonAnywhere-1e8449?style=for-the-badge)
 
 </div>
+
